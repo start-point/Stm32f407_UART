@@ -234,7 +234,15 @@ void DMA1_Stream4_IRQHandler(void)
 void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
-
+  /* 检测是否为空闲中断 */
+  if((__HAL_UART_GET_FLAG(&huart4, UART_FLAG_IDLE) != RESET))
+  {
+    /* 清除空闲中断标志 */
+    __HAL_UART_CLEAR_IDLEFLAG(&huart4);
+    
+    /* 调用空闲回调函数 */
+    USB_UART_IdleCallback();
+  }
   /* USER CODE END UART4_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN UART4_IRQn 1 */

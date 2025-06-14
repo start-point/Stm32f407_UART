@@ -2,7 +2,9 @@
   "name": "Stm32f407_UART",
   "type": "ARM",
   "dependenceList": [],
-  "srcDirs": [],
+  "srcDirs": [
+    "Code"
+  ],
   "virtualFolder": {
     "name": "<virtual_root>",
     "files": [],
@@ -274,7 +276,8 @@
           "Drivers/CMSIS/Device/ST/STM32F4xx/Include",
           "Drivers/CMSIS/Include",
           ".cmsis/include",
-          "MDK-ARM/RTE/_Stm32f407_UART"
+          "MDK-ARM/RTE/_Stm32f407_UART",
+          "Code"
         ],
         "libList": [],
         "defineList": [

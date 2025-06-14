@@ -1,0 +1,12 @@
+# 忽略所有内容
+/*
+
+# 但不忽略 Code 文件夹及其内容
+!/Code/
+!/Code/**
+!/Core/
+!/Core/**
+!/.eide
+!/.gitignore
+!/Stm32f407_UART.ioc
+!/Stm32f407_UART.code-workspace

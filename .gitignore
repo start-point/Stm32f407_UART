@@ -10,3 +10,5 @@
 !/.gitignore
 !/Stm32f407_UART.ioc
 !/Stm32f407_UART.code-workspace
+!/README.md
+!/image.png

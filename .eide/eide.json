@@ -3,7 +3,9 @@
   "type": "ARM",
   "dependenceList": [],
   "srcDirs": [
-    "Code"
+    "Code",
+    "Core",
+    "Drivers"
   ],
   "virtualFolder": {
     "name": "<virtual_root>",
@@ -127,7 +129,9 @@
   },
   "targets": {
     "Stm32f407_UART": {
-      "excludeList": [],
+      "excludeList": [
+        "<virtual_root>/Drivers"
+      ],
       "toolchain": "AC5",
       "compileConfig": {
         "cpuType": "Cortex-M4",

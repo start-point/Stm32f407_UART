@@ -91,9 +91,9 @@ int main(void)
   MX_DMA_Init();
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
-  // ณ๕สผปฏำฆำรณฬะ๒
+  // ๅๅงๅ–ๅบ”็”จ็จๅบ
   APP_Init();
-  // ฒโสิด๚ย๋
+  // ๆต่ฏ•ไปฃ็ 
   APP_Test();
   /* USER CODE END 2 */
 
@@ -102,7 +102,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    // ดฆภํำฆำรณฬะ๒ย฿ผญ
+    // ๅค็ๅบ”็”จ็จๅบ้€ป่พ‘
     APP_Process();
     /* USER CODE BEGIN 3 */
 

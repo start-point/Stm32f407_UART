@@ -4,19 +4,19 @@
 #include "../usb_uart.h"
 #include "main.h"
 
-// ²âÊÔÃüÁî´¦Àíº¯Êı
+// æµ‹è¯•å‘½ä»¤å¤„ç†å‡½æ•°
 void Test_ProcessCommand(void);
 
-// ²âÊÔÏµÍ³ĞÅÏ¢ÏÔÊ¾
+// æµ‹è¯•ç³»ç»Ÿä¿¡æ¯æ˜¾ç¤º
 void Test_ShowSystemInfo(void);
 
-// ²âÊÔ»ØÏÔ¹¦ÄÜ
+// æµ‹è¯•å›æ˜¾åŠŸèƒ½
 void Test_EchoCommand(char *text);
 
-// ²âÊÔÔËĞĞÊ±¼äÏÔÊ¾
+// æµ‹è¯•è¿è¡Œæ—¶é—´æ˜¾ç¤º
 void Test_ShowRunTime(void);
 
-// Ö÷²âÊÔº¯Êı
+// ä¸»æµ‹è¯•å‡½æ•°
 void USB_UART_Test(void);
 
 #endif /* __TEST_USB_UART_H */

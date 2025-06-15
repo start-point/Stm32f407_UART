@@ -1,89 +1,89 @@
 #include "test_usb_uart.h"
 #include <string.h>
 
-// ²âÊÔÃüÁî´¦Àíº¯Êı
+// æµ‹è¯•å‘½ä»¤å¤„ç†å‡½æ•°
 void Test_ProcessCommand(void)
 {
     if(uart_rx_done_flag)
     {
-        /* È·±£×Ö·û´®ÒÔ0½áÎ² */
+        /* ç¡®ä¿å­—ç¬¦ä¸²ä»¥0ç»“å°¾ */
         uart_rx_buffer[uart_rx_len] = 0;
         
-        /* ´òÓ¡½ÓÊÕµ½µÄÊı¾İ */
-        printf("½ÓÊÕµ½Êı¾İ: %s\r\n", uart_rx_buffer);
-        printf("Êı¾İ³¤¶È: %d\r\n", uart_rx_len);
+        /* Print received data */
+        printf("Received data: %s\r\n", uart_rx_buffer);
+        printf("Data length: %d\r\n", uart_rx_len);
         
-        /* Èç¹û½ÓÊÕµ½"help"ÃüÁî */
+        /* å¦‚æœæ¥æ”¶åˆ°"help"å‘½ä»¤ */
         if(strstr((char*)uart_rx_buffer, "help"))
         {
-            printf("¿ÉÓÃÃüÁîÁĞ±í:\r\n");
-            printf("help - ÏÔÊ¾°ïÖúĞÅÏ¢\r\n");
-            printf("info - ÏÔÊ¾ÏµÍ³ĞÅÏ¢\r\n");
-            printf("echo [ÎÄ±¾] - »ØÏÔÎÄ±¾\r\n");
+            printf("Available commands:\r\n");
+            printf("help - Display help information\r\n");
+            printf("info - Display system information\r\n");
+            printf("echo [text] - Echo text\r\n");
         }
-        /* Èç¹û½ÓÊÕµ½"info"ÃüÁî */
+        /* å¦‚æœæ¥æ”¶åˆ°"info"å‘½ä»¤ */
         else if(strstr((char*)uart_rx_buffer, "info"))
         {
             Test_ShowSystemInfo();
         }
-        /* Èç¹û½ÓÊÕµ½"echo"ÃüÁî */
+        /* å¦‚æœæ¥æ”¶åˆ°"echo"å‘½ä»¤ */
         else if(strstr((char*)uart_rx_buffer, "echo"))
         {
-            char *text = strstr((char*)uart_rx_buffer, "echo") + 5; // Ìø¹ı"echo "
+            char *text = strstr((char*)uart_rx_buffer, "echo") + 5; // è·³è¿‡"echo "
             Test_EchoCommand(text);
         }
         
-        /* Çå¿Õ½ÓÊÕ»º³åÇø */
+        /* æ¸…ç©ºæ¥æ”¶ç¼“å†²åŒº */
         USB_UART_ClearRxBuffer();
         
-        /* ÖØĞÂÆô¶¯½ÓÊÕ */
+        /* é‡æ–°å¯åŠ¨æ¥æ”¶ */
         USB_UART_ReceiveToIdle_DMA();
     }
 }
 
-// ²âÊÔÏµÍ³ĞÅÏ¢ÏÔÊ¾
+// æµ‹è¯•ç³»ç»Ÿä¿¡æ¯æ˜¾ç¤º
 void Test_ShowSystemInfo(void)
 {
-    printf("ÏµÍ³ĞÅÏ¢:\r\n");
-    printf("Ğ¾Æ¬ĞÍºÅ: STM32F4xx\r\n");
-    printf("ÏµÍ³Ê±ÖÓ: %d MHz\r\n", HAL_RCC_GetSysClockFreq() / 1000000);
-    printf("±àÒëÊ±¼ä: %s %s\r\n", __DATE__, __TIME__);
+    printf("System Info:\r\n");
+    printf("Chip Model: STM32F4xx\r\n");
+    printf("System Clock: %d MHz\r\n", HAL_RCC_GetSysClockFreq() / 1000000);
+    printf("Compile Time: %s %s\r\n", __DATE__, __TIME__);
 }
 
-// ²âÊÔ»ØÏÔ¹¦ÄÜ
+// æµ‹è¯•å›æ˜¾åŠŸèƒ½
 void Test_EchoCommand(char *text)
 {
-    printf("»ØÏÔ: %s\r\n", text);
+    printf("Echo: %s\r\n", text);
 }
 
-// ²âÊÔÔËĞĞÊ±¼äÏÔÊ¾
+// æµ‹è¯•è¿è¡Œæ—¶é—´æ˜¾ç¤º
 void Test_ShowRunTime(void)
 {
     static uint32_t last_time = 0;
     if(HAL_GetTick() - last_time >= 1000)
     {
         last_time = HAL_GetTick();
-        printf("ÏµÍ³ÔËĞĞÊ±¼ä: %d ms\r\n", HAL_GetTick());
+        printf("\t\tSystem Run Time: %d ms\r\n", HAL_GetTick());
     }
 }
 
-// Ö÷²âÊÔº¯Êı
+// ä¸»æµ‹è¯•å‡½æ•°
 void USB_UART_Test(void)
 {
-    // ³õÊ¼»¯USB UART
+    // åˆå§‹åŒ–USB UART
     USB_UART_Init();
     
-    // ´òÓ¡»¶Ó­ĞÅÏ¢
-    printf("»¶Ó­Ê¹ÓÃ´®¿Úµ÷ÊÔ¹¦ÄÜ\r\n");
-    printf("ÏµÍ³Ê±ÖÓÆµÂÊ: %d Hz\r\n", HAL_RCC_GetSysClockFreq());
-    
-    // Ö÷²âÊÔÑ­»·
+    // æ‰“å°æ¬¢è¿ä¿¡æ¯
+    printf("Welcome to serial port debugging\r\n");
+    printf("System Clock Frequency: %d Hz\r\n", HAL_RCC_GetSysClockFreq());
+        
+    // ä¸»æµ‹è¯•å¾ªç¯
     while(1)
     {
-        // ´¦ÀíÃüÁî
+        // å¤„ç†å‘½ä»¤
         Test_ProcessCommand();
         
-        // ÏÔÊ¾ÔËĞĞÊ±¼ä
+        // æ˜¾ç¤ºè¿è¡Œæ—¶é—´
         Test_ShowRunTime();
     }
 }

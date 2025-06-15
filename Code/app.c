@@ -3,22 +3,22 @@
 
 void APP_Init(void)
 {
-    // 初始化USB UART
+    // 鍒濆鍖朥SB UART
     USB_UART_Init();
 
 }
 
 void APP_Process(void)
 {
-    // 处理USB UART命令
+    // 澶勭悊USB UART鍛戒护
     Test_ProcessCommand();
     
-    // 显示运行时间
+    // 鏄剧ず杩愯鏃堕棿
     Test_ShowRunTime();
 }
 
 void APP_Test(void)
 {
-    // 测试USB UART功能
+    // 娴嬭瘯USB UART鍔熻兘
     USB_UART_Test();
 }

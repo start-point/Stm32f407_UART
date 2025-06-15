@@ -1,11 +1,11 @@
 /**
  * @file    usb_uart.c
- * @brief   ´®¿Úµ÷ÊÔ¹¦ÄÜÊµÏÖ
+ * @brief   ä¸²å£è°ƒè¯•åŠŸèƒ½å®žçŽ°
  */
 
 #include "usb_uart.h"
 
-/* Ë½ÓÐ±äÁ¿¶¨Òå */
+/* ç§æœ‰å˜é‡å®šä¹‰ */
 uint8_t uart_rx_buffer[DEBUG_UART_RX_BUFFER_SIZE];
 uint8_t uart_tx_buffer[DEBUG_UART_TX_BUFFER_SIZE];
 volatile uint8_t uart_rx_done_flag = 0;
@@ -14,59 +14,45 @@ static uint8_t printf_buffer[DEBUG_UART_TX_BUFFER_SIZE];
 static volatile uint8_t printf_busy = 0;
 
 /**
- * @brief  ³õÊ¼»¯´®¿Úµ÷ÊÔ¹¦ÄÜ
- * @param  ÎÞ
- * @retval ÎÞ
+ * @brief  åˆå§‹åŒ–ä¸²å£è°ƒè¯•åŠŸèƒ½
+ * @param  æ— 
+ * @retval æ— 
  */
 void USB_UART_Init(void)
 {
-    /* ´®¿ÚÒÑÔÚMX_UART4_InitÖÐ³õÊ¼»¯ */
+    /* ä¸²å£å·²åœ¨MX_UART4_Initä¸­åˆå§‹åŒ– */
     
-    /* Æô¶¯DMA½ÓÊÕ */
+    /* å¯åŠ¨DMAæŽ¥æ”¶ */
     USB_UART_ReceiveToIdle_DMA();
     
-    /* Ê¹ÄÜ´®¿Ú¿ÕÏÐÖÐ¶Ï */
+    /* ä½¿èƒ½ä¸²å£ç©ºé—²ä¸­æ–­ */
     __HAL_UART_ENABLE_IT(&DEBUG_UART, UART_IT_IDLE);
 }
 
 /**
- * @brief  ·´³õÊ¼»¯´®¿Úµ÷ÊÔ¹¦ÄÜ
- * @param  ÎÞ
- * @retval ÎÞ
- */
-void USB_UART_DeInit(void)
-{
-    /* Í£Ö¹DMA½ÓÊÕ */
-    HAL_UART_DMAStop(&DEBUG_UART);
-    
-    /* ½ûÓÃ´®¿Ú¿ÕÏÐÖÐ¶Ï */
-    __HAL_UART_DISABLE_IT(&DEBUG_UART, UART_IT_IDLE);
-}
-
-/**
- * @brief  Ê¹ÓÃDMA½ÓÊÕÊý¾ÝÖ±µ½¿ÕÏÐ
- * @param  ÎÞ
- * @retval ÎÞ
+ * @brief  ä½¿ç”¨DMAæŽ¥æ”¶æ•°æ®ç›´åˆ°ç©ºé—²
+ * @param  æ— 
+ * @retval æ— 
  */
 void USB_UART_ReceiveToIdle_DMA(void)
 {
-    /* Çå¿Õ½ÓÊÕ»º³åÇø */
+    /* æ¸…ç©ºæŽ¥æ”¶ç¼“å†²åŒº */
     memset(uart_rx_buffer, 0, DEBUG_UART_RX_BUFFER_SIZE);
     
-    /* Æô¶¯DMA½ÓÊÕ */
+    /* å¯åŠ¨DMAæŽ¥æ”¶ */
     HAL_UARTEx_ReceiveToIdle_DMA(&DEBUG_UART, uart_rx_buffer, DEBUG_UART_RX_BUFFER_SIZE);
     
-    /* ½ûÓÃ°ë´«ÊäÖÐ¶Ï */
+    /* ç¦ç”¨åŠä¼ è¾“ä¸­æ–­ */
     __HAL_DMA_DISABLE_IT(DEBUG_UART.hdmarx, DMA_IT_HT);
     
-    /* È·±£³õÊ¼×´Ì¬ÏÂ½ÓÊÕ±êÖ¾Îª0 */
+    /* ç¡®ä¿åˆå§‹çŠ¶æ€ä¸‹æŽ¥æ”¶æ ‡å¿—ä¸º0 */
     uart_rx_done_flag = 0;
 }
 
 /**
- * @brief  »ñÈ¡½ÓÊÕÊý¾Ý³¤¶È
- * @param  ÎÞ
- * @retval ½ÓÊÕÊý¾Ý³¤¶È
+ * @brief  èŽ·å–æŽ¥æ”¶æ•°æ®é•¿åº¦
+ * @param  æ— 
+ * @retval æŽ¥æ”¶æ•°æ®é•¿åº¦
  */
 uint16_t USB_UART_GetRxLen(void)
 {
@@ -74,9 +60,9 @@ uint16_t USB_UART_GetRxLen(void)
 }
 
 /**
- * @brief  Çå¿Õ½ÓÊÕ»º³åÇø
- * @param  ÎÞ
- * @retval ÎÞ
+ * @brief  æ¸…ç©ºæŽ¥æ”¶ç¼“å†²åŒº
+ * @param  æ— 
+ * @retval æ— 
  */
 void USB_UART_ClearRxBuffer(void)
 {
@@ -86,119 +72,20 @@ void USB_UART_ClearRxBuffer(void)
 }
 
 /**
- * @brief  Ê¹ÓÃDMA·¢ËÍÊý¾Ý
- * @param  data: Òª·¢ËÍµÄÊý¾Ý
- * @param  size: Êý¾Ý´óÐ¡
- * @retval ÎÞ
+ * @brief  ä½¿ç”¨DMAå‘é€æ•°æ®
+ * @param  data: è¦å‘é€çš„æ•°æ®
+ * @param  size: æ•°æ®å¤§å°
+ * @retval æ— 
  */
 void USB_UART_Transmit(uint8_t *data, uint16_t size)
 {
     HAL_UART_Transmit_DMA(&DEBUG_UART, data, size);
 }
 
-/**
- * @brief  ·¢ËÍ×Ö·û´®
- * @param  str: Òª·¢ËÍµÄ×Ö·û´®
- * @retval ÎÞ
- */
-void USB_UART_TransmitStr(char *str)
-{
-    USB_UART_Transmit((uint8_t *)str, strlen(str));
-}
 
-/**
- * @brief  ¸ñÊ½»¯´òÓ¡º¯Êý£¨DMA¼ÓËÙ£©
- * @param  format: ¸ñÊ½×Ö·û´®
- * @param  ...: ¿É±ä²ÎÊý
- * @retval ÎÞ
- */
-void USB_UART_Printf(const char *format, ...)
-{
-    va_list args;
-    uint32_t length;
-    
-    /* µÈ´ýÉÏÒ»´ÎDMA´«ÊäÍê³É */
-    while (printf_busy) {
-        /* µÈ´ýDMA´«ÊäÍê³É */
-    }
-    
-    va_start(args, format);
-    length = vsnprintf((char *)uart_tx_buffer, DEBUG_UART_TX_BUFFER_SIZE, format, args);
-    va_end(args);
-    
-    /* ±ê¼ÇÕýÔÚ·¢ËÍ */
-    printf_busy = 1;
-    
-    /* Ê¹ÓÃDMA·¢ËÍÊý¾Ý */
-    HAL_UART_Transmit_DMA(&DEBUG_UART, uart_tx_buffer, length);
-}
 
-/**
- * @brief  ½ÓÊÕÍê³É´¦Àíº¯Êý(ÄÚ²¿Ê¹ÓÃ)
- * @param  ÎÞ
- * @retval ÎÞ
- */
-void USB_UART_RxCpltCallback(void)
-{
-    uart_rx_done_flag = 1;
-    
-    /* ´òÓ¡µ÷ÊÔÐÅÏ¢ */
-    printf("USB_UART_RxCpltCallback: ½ÓÊÕÍê³É\r\n");
-}
 
-/**
- * @brief  ·¢ËÍÍê³É´¦Àíº¯Êý(ÄÚ²¿Ê¹ÓÃ)
- * @param  ÎÞ
- * @retval ÎÞ
- */
-void USB_UART_TxCpltCallback(void)
-{
-    /* ·¢ËÍÍê³ÉºóµÄ´¦Àí */
-}
-
-/**
- * @brief  ´íÎó´¦Àíº¯Êý(ÄÚ²¿Ê¹ÓÃ)
- * @param  ÎÞ
- * @retval ÎÞ
- */
-void USB_UART_ErrorCallback(void)
-{
-    /* ´íÎó´¦Àí */
-    USB_UART_ReceiveToIdle_DMA();
-}
-
-/**
- * @brief  ¿ÕÏÐ»Øµ÷º¯Êý
- * @param  ÎÞ
- * @retval ÎÞ
- */
-void USB_UART_IdleCallback(void)
-{
-    /* ¼ÆËã½ÓÊÕµ½µÄÊý¾Ý³¤¶È */
-    uart_rx_len = DEBUG_UART_RX_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(DEBUG_UART.hdmarx);
-    
-    /* Ö»ÓÐµ±½ÓÊÕµ½Êý¾ÝÊ±²ÅÉèÖÃ±êÖ¾ */
-    if(uart_rx_len > 0)
-    {
-        /* ÉèÖÃ½ÓÊÕÍê³É±êÖ¾ */
-        uart_rx_done_flag = 1;
-        
-        /* Í£Ö¹DMA½ÓÊÕ */
-        HAL_UART_DMAStop(&DEBUG_UART);
-        
-        /* È·±£×Ö·û´®ÒÔ0½áÎ² */
-        uart_rx_buffer[uart_rx_len] = 0;
-    }
-    else
-    {
-        /* Èç¹ûÃ»ÓÐ½ÓÊÕµ½Êý¾Ý£¬ÖØÐÂÆô¶¯½ÓÊÕ */
-        USB_UART_ReceiveToIdle_DMA();
-    }
-}
-
-/* printfÖØ¶¨ÏòÏà¹Øº¯Êý */
-
-/* ÖØ¶¨Ïòprintfº¯Êý - Ê¹ÓÃDMA¼ÓËÙ */
+/* é‡å®šå‘printfå‡½æ•° - ä½¿ç”¨DMAåŠ é€Ÿ */
 #ifdef __GNUC__
 int __io_putchar(int ch)
 #else
@@ -207,116 +94,109 @@ int fputc(int ch, FILE *f)
 {
     static uint16_t index = 0;
     
-    /* ½«×Ö·û¼ÓÈë»º³åÇø */
-    printf_buffer[index++] = (uint8_t)ch;
-    
-    /* Èç¹ûÊÇ»»ÐÐ·û»ò»º³åÇøÒÑÂú»òÊÇ»Ø³µ·û£¬Ôò·¢ËÍÊý¾Ý */
-    if (ch == '\n' || index >= DEBUG_UART_TX_BUFFER_SIZE - 1 || ch == '\r')
-    {
-        /* µÈ´ýÉÏÒ»´ÎDMA´«ÊäÍê³É */
+    // å°†å­—ç¬¦åŠ å…¥ç¼“å†²åŒº
+    // åœ¨å†™å…¥ä¹‹å‰æ£€æŸ¥æ˜¯å¦ä¼šæº¢å‡º
+    if (index >= DEBUG_UART_TX_BUFFER_SIZE - 1) {
+        // ç¼“å†²åŒºå·²æ»¡ï¼Œå…ˆå‘é€å½“å‰ç¼“å†²åŒºå†…å®¹
+        // ç­‰å¾…ä¸Šä¸€æ¬¡DMAä¼ è¾“å®Œæˆ
         while (printf_busy) {
-            /* µÈ´ýDMA´«ÊäÍê³É */
+            // ç­‰å¾…DMAä¼ è¾“å®Œæˆ
         }
         
-        /* ±ê¼ÇÕýÔÚ·¢ËÍ */
+        // æ ‡è®°æ­£åœ¨å‘é€
         printf_busy = 1;
         
-        /* Ê¹ÓÃDMA·¢ËÍÊý¾Ý */
+        // ä½¿ç”¨DMAå‘é€æ•°æ®
         HAL_UART_Transmit_DMA(&DEBUG_UART, printf_buffer, index);
         
-        /* ÖØÖÃË÷Òý */
+        // é‡ç½®ç´¢å¼•
+        index = 0;
+    }
+    
+    printf_buffer[index++] = (uint8_t)ch;
+    
+    // å¦‚æžœæ˜¯æ¢è¡Œç¬¦æˆ–ç¼“å†²åŒºå·²æ»¡æˆ–æ˜¯å›žè½¦ç¬¦ï¼Œåˆ™å‘é€æ•°æ®
+    if (ch == '\n' || index >= DEBUG_UART_TX_BUFFER_SIZE - 1 || ch == '\r')
+    {
+        // ç­‰å¾…ä¸Šä¸€æ¬¡DMAä¼ è¾“å®Œæˆ
+        while (printf_busy) {
+            // ç­‰å¾…DMAä¼ è¾“å®Œæˆ
+        }
+        
+        // æ ‡è®°æ­£åœ¨å‘é€
+        printf_busy = 1;
+        
+        // ä½¿ç”¨DMAå‘é€æ•°æ®
+        HAL_UART_Transmit_DMA(&DEBUG_UART, printf_buffer, index);
+        
+        // é‡ç½®ç´¢å¼•
         index = 0;
     }
     
     return ch;
 }
 
-/* ÖØ¶¨Ïòscanfº¯Êý */
-#ifdef __GNUC__
-int __io_getchar(void)
-#else
-int fgetc(FILE *f)
-#endif
-{
-    uint8_t ch = 0;
-    /* ½ÓÊÕµ¥¸ö×Ö·û */
-    HAL_UART_Receive(&DEBUG_UART, &ch, 1, 0xFFFF);
-    return ch;
-}
 
 /**
- * @brief  ´®¿Ú½ÓÊÕÍê³É»Øµ÷º¯Êý(HAL¿â»Øµ÷)
- * @param  huart: ´®¿Ú¾ä±ú
- * @retval ÎÞ
- */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  if(huart->Instance == DEBUG_UART_HANDLE)
-  {
-    uart_rx_done_flag = 1;
-    
-    /* ´òÓ¡µ÷ÊÔÐÅÏ¢ */
-    printf("HAL_UART_RxCpltCallback: ½ÓÊÕÍê³É\r\n");
-    
-    /* ÖØÐÂÆô¶¯DMA½ÓÊÕ */
-    USB_UART_ReceiveToIdle_DMA();
-  }
-}
-
-/**
- * @brief  ´®¿Ú·¢ËÍÍê³É»Øµ÷º¯Êý(HAL¿â»Øµ÷)
- * @param  huart: ´®¿Ú¾ä±ú
- * @retval ÎÞ
+ * @brief  ä¸²å£å‘é€å®Œæˆå›žè°ƒå‡½æ•°(HALåº“å›žè°ƒ)
+ * @param  huart: ä¸²å£å¥æŸ„
+ * @retval æ— 
  */
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
   if(huart->Instance == DEBUG_UART_HANDLE)
   {
-    /* ±ê¼Ç·¢ËÍÍê³É */
+    /* æ ‡è®°å‘é€å®Œæˆ */
     printf_busy = 0;
   }
 }
 
 /**
- * @brief  ´®¿Ú´íÎó»Øµ÷º¯Êý(HAL¿â»Øµ÷)
- * @param  huart: ´®¿Ú¾ä±ú
- * @retval ÎÞ
+ * @brief  ä¸²å£é”™è¯¯å›žè°ƒå‡½æ•°(HALåº“å›žè°ƒ)
+ * @param  huart: ä¸²å£å¥æŸ„
+ * @retval æ— 
  */
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
   if(huart->Instance == DEBUG_UART_HANDLE)
   {
-    /* ´íÎó´¦Àí */
+    /* é”™è¯¯å¤„ç† */
     USB_UART_ReceiveToIdle_DMA();
   }
 }
 
 /**
-  * @brief  ´®¿Ú½ÓÊÕµ½¿ÕÏÐÖÐ¶Ï»Øµ÷º¯Êý(HAL¿â»Øµ÷)
-  * @param  huart: ´®¿Ú¾ä±ú
-  * @param  Size: ½ÓÊÕµ½µÄÊý¾Ý´óÐ¡
-  * @retval ÎÞ
+  * @brief  ä¸²å£æŽ¥æ”¶åˆ°ç©ºé—²ä¸­æ–­å›žè°ƒå‡½æ•°(HALåº“å›žè°ƒ)
+  * @param  huart: ä¸²å£å¥æŸ„
+  * @param  Size: æŽ¥æ”¶åˆ°çš„æ•°æ®å¤§å°
+  * @retval æ— 
   */
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
   if(huart->Instance == DEBUG_UART_HANDLE)
   {
-    /* Ö»ÓÐµ±½ÓÊÕµ½Êý¾ÝÊ±²ÅÉèÖÃ±êÖ¾ */
+    // å½“æŽ¥æ”¶åˆ°æ•°æ®æ—¶
     if(Size > 0)
     {
       uart_rx_len = Size;
-      uart_rx_done_flag = 1;
+      uart_rx_done_flag = 1; // è®¾ç½®æŽ¥æ”¶å®Œæˆæ ‡å¿—
       
-      /* È·±£×Ö·û´®ÒÔ0½áÎ² */
-      uart_rx_buffer[Size] = 0;
+      // ç¡®ä¿å­—ç¬¦ä¸²ä»¥0ç»“å°¾ï¼Œé¿å…ç¼“å†²åŒºæº¢å‡º
+      // å¦‚æžœSizeç­‰äºŽç¼“å†²åŒºå¤§å°ï¼Œåˆ™ä¸èƒ½åœ¨Sizeå¤„å†™å…¥ï¼Œå› ä¸ºä¼šè¶…å‡ºæ•°ç»„è¾¹ç•Œ
+      if (Size < DEBUG_UART_RX_BUFFER_SIZE) {
+          uart_rx_buffer[Size] = 0;
+      } else {
+          // å¦‚æžœæŽ¥æ”¶åˆ°çš„æ•°æ®åˆšå¥½å¡«æ»¡ç¼“å†²åŒºï¼Œåˆ™åœ¨æœ€åŽä¸€ä¸ªæœ‰æ•ˆå­—ç¬¦åŽæ·»åŠ ç©ºå­—ç¬¦
+          uart_rx_buffer[DEBUG_UART_RX_BUFFER_SIZE - 1] = 0;
+      }
       
-      /* ´òÓ¡µ÷ÊÔÐÅÏ¢ */
-      printf("HAL_UARTEx_RxEventCallback: ½ÓÊÕµ½ %d ×Ö½ÚÊý¾Ý\r\n", Size);
+      // åœ¨æŽ¥æ”¶åˆ°æ•°æ®åŽï¼ŒDMAæŽ¥æ”¶ä¼šè‡ªåŠ¨åœæ­¢ã€‚
+      // é‡æ–°å¯åŠ¨DMAæŽ¥æ”¶çš„ä»»åŠ¡åº”è¯¥äº¤ç»™ä¸Šå±‚åº”ç”¨ï¼ˆå¦‚Test_ProcessCommandï¼‰åœ¨å¤„ç†å®Œæ•°æ®åŽè¿›è¡Œï¼Œ
+      // é¿å…åœ¨ä¸­æ–­ä¸­é‡å¤å¯åŠ¨DMAå¯¼è‡´çŠ¶æ€æ··ä¹±ã€‚
     }
-    else
+    else // å¦‚æžœæ²¡æœ‰æŽ¥æ”¶åˆ°æ•°æ®ï¼ˆç©ºé—²ä¸­æ–­ä½†æ— æ•°æ®ï¼‰ï¼Œåˆ™é‡æ–°å¯åŠ¨æŽ¥æ”¶
     {
-      /* Èç¹ûÃ»ÓÐ½ÓÊÕµ½Êý¾Ý£¬ÖØÐÂÆô¶¯½ÓÊÕ */
       USB_UART_ReceiveToIdle_DMA();
     }
   }
-} 
+}

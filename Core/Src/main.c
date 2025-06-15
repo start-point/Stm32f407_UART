@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "usb_uart.h"
+#include "app.h" 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,20 +91,10 @@ int main(void)
   MX_DMA_Init();
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
-  /* 初始化串口调试功能 */
-  USB_UART_Init();
-  
-  /* 打印欢迎信息 */
-  printf("欢迎使用串口调试功能\r\n");
-  printf("系统时钟频率: %d Hz\r\n", HAL_RCC_GetSysClockFreq());
-  
-  /* 发送测试命令 */
-  HAL_Delay(1000); // 等待1秒
-  printf("发送测试命令: help\r\n");
-  // 模拟接收到help命令
-  strcpy((char*)uart_rx_buffer, "help");
-  uart_rx_len = 4;
-  uart_rx_done_flag = 1;
+  // 初始化应用程序
+  APP_Init();
+  // 测试代码
+  APP_Test();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -112,55 +102,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    // 处理应用程序逻辑
+    APP_Process();
     /* USER CODE BEGIN 3 */
-    /* 检测是否接收到数据 */
-    if(uart_rx_done_flag)
-    {
-      /* 确保字符串以0结尾 */
-      uart_rx_buffer[uart_rx_len] = 0;
-      
-      /* 打印接收到的数据 */
-      printf("接收到数据: %s\r\n", uart_rx_buffer);
-      printf("数据长度: %d\r\n", uart_rx_len);
-      
-      /* 如果接收到"help"命令 */
-      if(strstr((char*)uart_rx_buffer, "help"))
-      {
-        printf("可用命令列表:\r\n");
-        printf("help - 显示帮助信息\r\n");
-        printf("info - 显示系统信息\r\n");
-        printf("echo [文本] - 回显文本\r\n");
-      }
-      /* 如果接收到"info"命令 */
-      else if(strstr((char*)uart_rx_buffer, "info"))
-      {
-        printf("系统信息:\r\n");
-        printf("芯片型号: STM32F4xx\r\n");
-        printf("系统时钟: %d MHz\r\n", HAL_RCC_GetSysClockFreq() / 1000000);
-        printf("编译时间: %s %s\r\n", __DATE__, __TIME__);
-      }
-      /* 如果接收到"echo"命令 */
-      else if(strstr((char*)uart_rx_buffer, "echo"))
-      {
-        char *text = strstr((char*)uart_rx_buffer, "echo") + 5; // 跳过"echo "
-        printf("回显: %s\r\n", text);
-      }
-      
-      /* 清空接收缓冲区 */
-      USB_UART_ClearRxBuffer();
-      
-      /* 重新启动接收 */
-      USB_UART_ReceiveToIdle_DMA();
-    }
-    
-    /* 每秒打印一次系统运行时间 */
-    static uint32_t last_time = 0;
-    if(HAL_GetTick() - last_time >= 1000)
-    {
-      last_time = HAL_GetTick();
-      printf("系统运行时间: %d ms\r\n", HAL_GetTick());
-    }
+
   }
   /* USER CODE END 3 */
 }
